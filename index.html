@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nott — notatnik, który niczego nie gubi</title>
+<meta name="description" content="Nott: macOS-owy notes z jednym ciągłym notesem na projekt, lokalną transkrypcją spotkań i asystentem AI, który nie wynosi notatek poza komputer.">
+<style>
+  :root {
+    --bg: #faf9f7;
+    --panel: #ffffff;
+    --ink: #1d1c1a;
+    --muted: #6b6862;
+    --line: #e6e2da;
+    --accent: #4a6d52;
+    --accent-soft: #eef2ee;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171614;
+      --panel: #201f1c;
+      --ink: #ece9e3;
+      --muted: #a09b92;
+      --line: #35332e;
+      --accent: #8fb497;
+      --accent-soft: #24312a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 0 24px 96px; }
+  a { color: var(--accent); }
+
+  header.hero { padding: 88px 0 56px; text-align: left; }
+  .hero .logo {
+    display: inline-flex; align-items: center; gap: 14px; margin-bottom: 28px;
+  }
+  .hero .logo .mark {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 700; font-family: "Iowan Old Style", Georgia, serif;
+  }
+  .hero h1 { font-size: 44px; line-height: 1.15; letter-spacing: -0.02em; max-width: 700px; }
+  .hero p.lead { margin-top: 18px; font-size: 21px; color: var(--muted); max-width: 640px; }
+  .hero .actions { margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 22px; border-radius: 10px;
+    text-decoration: none; font-weight: 600; font-size: 16px;
+  }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn.ghost { border: 1px solid var(--line); color: var(--ink); }
+  .hero .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
+
+  section { margin-top: 72px; }
+  h2 {
+    font-size: 15px; text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--accent); margin-bottom: 22px;
+  }
+  h3 { font-size: 20px; margin-bottom: 8px; }
+
+  .manifest { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .tenet {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px;
+  }
+  .tenet h3 { font-size: 17px; }
+  .tenet p { margin-top: 6px; font-size: 15px; color: var(--muted); }
+
+  .mission { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .mission { grid-template-columns: 1fr; } }
+  .mission .card {
+    background: var(--accent-soft); border-radius: 14px; padding: 26px;
+  }
+  .mission .card p { margin-top: 8px; }
+  .loop {
+    margin-top: 16px; padding: 18px 22px; border-left: 3px solid var(--accent);
+    background: var(--panel); border-radius: 0 12px 12px 0;
+    font-size: 16px; color: var(--muted);
+  }
+  .loop b { color: var(--ink); }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .feature {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px;
+  }
+  .feature .icon { font-size: 22px; margin-bottom: 10px; display: block; }
+  .feature ul { margin: 10px 0 0 0; padding: 0; list-style: none; }
+  .feature li {
+    font-size: 15px; color: var(--muted); padding: 4px 0 4px 18px; position: relative;
+  }
+  .feature li::before {
+    content: "—"; position: absolute; left: 0; color: var(--accent);
+  }
+
+  .releases { border-left: 2px solid var(--line); padding-left: 28px; }
+  .release { position: relative; padding-bottom: 36px; }
+  .release:last-child { padding-bottom: 0; }
+  .release::before {
+    content: ""; position: absolute; left: -35px; top: 8px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg);
+  }
+  .release .meta { font-size: 14px; color: var(--muted); margin-bottom: 4px; }
+  .release ul { margin: 8px 0 0 0; padding-left: 20px; color: var(--muted); font-size: 15px; }
+  .release li { margin: 4px 0; }
+  .release li b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: 88px; padding-top: 28px; border-top: 1px solid var(--line);
+    font-size: 14px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+  <div class="logo">
+    <div class="mark">N</div>
+    <strong style="font-size:22px">Nott</strong>
+  </div>
+  <h1>Notatnik, który niczego nie gubi — i niczego nie wynosi z komputera.</h1>
+  <p class="lead">Jeden projekt to jeden ciągły notes z osią czasu. Spotkania nagrywają się
+  i przepisują same, lokalny asystent porządkuje wpisy, a wszystko zostaje w zwykłych
+  plikach Markdown na Twoim dysku.</p>
+  <div class="actions">
+    <a class="btn primary" href="https://github.com/jedrzej-am/Nott-wydania/releases/latest">Pobierz najnowszą wersję</a>
+    <a class="btn ghost" href="#wydania">Zobacz, co się zmieniło</a>
+  </div>
+  <p class="note">macOS 15 lub nowszy · Apple Silicon · aplikacja aktualizuje się sama</p>
+</header>
+
+<section id="manifest">
+  <h2>Manifest</h2>
+  <div class="manifest">
+    <div class="tenet">
+      <h3>Tekst jest jedynym stanem</h3>
+      <p>Zadania, ustalenia i terminy nie mieszkają w żadnej bazie — są liniami w Twoim
+      pliku. Nie ma czego zdesynchronizować, a notatki otwierają się w każdym edytorze świata.</p>
+    </div>
+    <div class="tenet">
+      <h3>Wszystko lokalnie</h3>
+      <p>Transkrypcja spotkań i asystent AI działają na Twoim komputerze. Żadna notatka,
+      żadne nagranie i żadne słowo nie opuszcza maszyny. Bez konta, bez chmury, bez abonamentu.</p>
+    </div>
+    <div class="tenet">
+      <h3>Nic nie ginie od jednego kliknięcia</h3>
+      <p>Własny kosz, kopia pliku przed pierwszą zmianą w sesji, cofanie operacji
+      i uszkodzone pliki odkładane na bok zamiast nadpisywane. Usunąć naprawdę można
+      tylko świadomie.</p>
+    </div>
+    <div class="tenet">
+      <h3>Aplikacja nie przepisuje Twoich plików</h3>
+      <p>Otwarcie pliku nigdy go nie zmienia — co do znaku. Jedyne zmiany w notatce to te,
+      które sam wprowadzisz. Twoje pliki, Twoje zasady.</p>
+    </div>
+    <div class="tenet">
+      <h3>Jeden ciągły notes, nie sto karteczek</h3>
+      <p>Projekt to jeden długi notes dzielony dniami — masz oś czasu i wracasz do dowolnego
+      dnia, zamiast zarządzać drzewkiem plików i szukać, gdzie to było.</p>
+    </div>
+    <div class="tenet">
+      <h3>Podgląd to sposób patrzenia, nie treść</h3>
+      <p>Zwijanie, podgląd, karty i okna niczego nie zapisują w notatce. Plik zostaje
+      czysty — zmienia się tylko to, jak na niego patrzysz.</p>
+    </div>
+  </div>
+</section>
+
+<section id="misja">
+  <h2>Wizja i misja</h2>
+  <div class="mission">
+    <div class="card">
+      <h3>Misja</h3>
+      <p>Obsłużyć całą pętlę dnia pracy w jednym miejscu — od luźnej notatki, przez ustalenia
+      i zadania, po podsumowanie — bez przepisywania niczego między aplikacjami.</p>
+    </div>
+    <div class="card">
+      <h3>Wizja</h3>
+      <p>Osobisty warsztat pracy umysłowej: prywatny, przewidywalny i trwały. Narzędzie,
+      któremu można powierzyć dziesięć lat notatek, bo za dziesięć lat nadal będą to
+      zwykłe pliki tekstowe.</p>
+    </div>
+  </div>
+  <p class="loop">Pętla, wokół której zbudowana jest każda funkcja:
+  <b>notatka → ustalenia → zadania → podsumowanie</b> — i szybki powrót do każdego z tych miejsc.</p>
+</section>
+
+<section id="funkcje">
+  <h2>Funkcjonalności</h2>
+  <div class="features">
+    <div class="feature">
+      <span class="icon">📓</span>
+      <h3>Notes i pisanie</h3>
+      <ul>
+        <li>Jeden ciągły notes na projekt, wpis na dzień jednym kliknięciem (⌘N)</li>
+        <li>Bloki przez <code>/</code>: zadanie, ustalenie; osoby przez <code>@</code>, terminy przez <code>!</code></li>
+        <li>Menu Format i skróty: pogrubienie, nagłówki, cytaty, listy</li>
+        <li>Komentarze odautorskie <code>%%</code> i „Kopiuj do publikacji" z licznikiem znaków</li>
+        <li>Zwijane wpisy i podsekcje <code>###</code>, przypinanie wpisów na górze</li>
+        <li>Szablony wpisów: spotkanie, 1 na 1, retrospektywa i własne</li>
+      </ul>
+    </div>
+    <div class="feature">
+      <span class="icon">✅</span>
+      <h3>Zadania i przegląd</h3>
+      <ul>
+        <li>Panel zadań i ustaleń zbierany z całego notesu — klik wraca do dnia</li>
+        <li>Widoki na całą bibliotekę: Wszystkie zadania · Kalendarz · Wszystkie ustalenia</li>
+        <li>Kalendarz 7 dni i miesiąc, z paskiem zaległych</li>
+        <li>Pływający widget GTD na pulpicie i zadania w pasku menu</li>
+        <li>Przypomnienia o terminach i poranny przegląd dnia</li>
+      </ul>
+    </div>
+    <div class="feature">
+      <span class="icon">🎙️</span>
+      <h3>Spotkania i transkrypcja</h3>
+      <ul>
+        <li>Nagrywanie mikrofonu i dźwięku systemowego (wideokonferencje) bez sterowników</li>
+        <li>Transkrypcja lokalnie przez whisper.cpp — po polsku, offline</li>
+        <li>Tryby: dyktowanie, rozmowa przy stole, spotkanie online, hybrydowe</li>
+        <li>Zapis prosto do notesu, z czasem i stroną rozmowy</li>
+      </ul>
+    </div>
+    <div class="feature">
+      <span class="icon">✨</span>
+      <h3>Asystent AI — lokalny</h3>
+      <ul>
+        <li>Agenci: porządkowanie wpisu, podsumowanie dnia, własne polecenia</li>
+        <li>Modele przez Ollamę, dobierane do chipa i pamięci Twojego Maca</li>
+        <li>Wersje tekstu: surowa i od modelu — przełączasz, nic nie przepada</li>
+        <li>Osłona prywatności: wrażliwe fragmenty nie trafiają do modelu</li>
+      </ul>
+    </div>
+    <div class="feature">
+      <span class="icon">🗂️</span>
+      <h3>Organizacja i prywatność</h3>
+      <ul>
+        <li>Tagi zamiast folderów — pliki leżą płasko, projekty w grupach</li>
+        <li>Tryby pracy: Służbowy, Domowy… — przełączasz cały kontekst naraz</li>
+        <li>Notatki chronione PIN-em, zamykane same po kwadransie</li>
+        <li>Kosz, kopie bezpieczeństwa i cofanie operacji na notesie</li>
+      </ul>
+    </div>
+    <div class="feature">
+      <span class="icon">🪟</span>
+      <h3>Pliki, karty i okna <small style="color:var(--accent)">· nowość 1.4</small></h3>
+      <ul>
+        <li>Podgląd plików CSV (tabela), JSON (kolorowany, ułożony) i Markdown obok notatek</li>
+        <li>Karty nad notesem — przypnij kilka plików i wracaj jednym kliknięciem (⌘T)</li>
+        <li>Drugie okno z notatką do czytania — dwa okna obok siebie jednym poleceniem</li>
+        <li>Podgląd całej notatki złożonej do czytania (⌥⌘P)</li>
+        <li>Szybka notatka z globalnego skrótu, okno zawsze na wierzchu, połówki i ćwiartki ekranu</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="wydania">
+  <h2>Wydania</h2>
+  <div class="releases">
+
+    <div class="release">
+      <div class="meta">1.4 · 25 sierpnia 2026</div>
+      <h3>Pliki, karty i dwa okna</h3>
+      <ul>
+        <li><b>Podgląd plików CSV, JSON i Markdown</b> — pliki danych z folderu notatek pokazują się w sidebarze i otwierają jako sformatowany podgląd: CSV jako tabela, JSON ułożony i pokolorowany, Markdown złożony do czytania.</li>
+        <li><b>Karty nad notesem</b> — przypnij notatki i pliki jako karty (⌘T), przełączaj się kliknięciem albo ⇧⌘[ i ⇧⌘]. Karty pamiętają kolejność i wracają po restarcie.</li>
+        <li><b>Dwa okna obok siebie</b> — „Otwórz w oknie obok" stawia drugą notatkę w osobnym oknie z podglądem na żywo; czytasz jedno, piszesz w drugim.</li>
+        <li><b>Podgląd całej notatki</b> (⌥⌘P) i wyrównany pasek ikon w nagłówku.</li>
+        <li><b>Bezpieczniejsze metadane</b> — uszkodzony plik biblioteki, kosza czy wariantów odkłada się na bok z datą zamiast po cichu nadpisać.</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="meta">1.3 · 24 sierpnia 2026</div>
+      <h3>Porządek w nawigacji</h3>
+      <ul>
+        <li><b>Sekcja „Przegląd" w sidebarze</b> — Wszystkie zadania, Kalendarz i Wszystkie ustalenia mają własne wejścia nad listą projektów (⌘1–⌘4).</li>
+        <li><b>Prawy panel dotyczy tylko otwartego notesu</b> — całą bibliotekę pokazują widoki z Przeglądu.</li>
+        <li>Widoki nadrzędne z własnym nagłówkiem i licznikami; klik w projekt zawsze wraca do notesu.</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="meta">1.2 · 24 sierpnia 2026</div>
+      <h3>Przewodnik, podsekcje i AI dobrane do sprzętu</h3>
+      <ul>
+        <li><b>Przewodnik pierwszego uruchomienia</b> — instaluje też asystenta za jedną zgodą: Ollama, serwer, model. Bez terminala.</li>
+        <li><b>AI dobrane do komputera</b> — aplikacja mówi wprost, który model zadziała na Twoim Macu.</li>
+        <li><b>Zwijane podsekcje ###</b> wewnątrz wpisów; plik zostaje ciągłym tekstem.</li>
+        <li><b>Duże widoki</b>: Notes · Zadania · Kalendarz · Ustalenia na całą szerokość.</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="meta">1.1 · 24 sierpnia 2026</div>
+      <h3>Tryby pracy i warsztat pisarski</h3>
+      <ul>
+        <li><b>Tryby pracy</b> — nazwane zestawy tagów (Służbowy, Domowy…) zawężające całą aplikację.</li>
+        <li><b>Notatki chronione PIN-em</b> — znikają z aplikacji do czasu podania PIN-u; zamek zamyka się sam.</li>
+        <li><b>Warsztat pisarski</b> — menu Format, komentarze <code>%%</code>, „Kopiuj do publikacji", licznik znaków i słów.</li>
+        <li>Wymagany system obniżony do macOS 15.</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="meta">1.0 · 22 sierpnia 2026</div>
+      <h3>Pierwsze wydanie</h3>
+      <ul>
+        <li>Notes z sekcjami i blokami, zadania i ustalenia z tekstu.</li>
+        <li>Nagrywanie spotkań z lokalną transkrypcją whisper.</li>
+        <li>Agenci AI przez Ollamę, widget zadań, przypomnienia o terminach.</li>
+        <li>System wydań: aplikacja odtąd aktualizuje się sama.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>Nott — prywatny projekt Jędrzeja. Kod aplikacji jest zamknięty; binarki i historia wydań
+  są publiczne w <a href="https://github.com/jedrzej-am/Nott-wydania">repozytorium wydań</a>.</p>
+  <p style="margin-top:6px">Podpis ad-hoc: przy pierwszej instalacji macOS poprosi o zgodę
+  w Ustawieniach → Prywatność i ochrona → „Otwórz mimo to". Kolejne wersje instalują się same.</p>
+</footer>
+
+</main>
+</body>
+</html>
