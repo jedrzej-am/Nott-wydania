@@ -28,7 +28,7 @@ fi
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-echo "Pobieram Nott $WERSJA…"
+echo "Pobieram Nott ${WERSJA}…"
 curl -fL --progress-bar -o "$TMP/Nott.zip" "$URL"
 ditto -x -k "$TMP/Nott.zip" "$TMP"
 
