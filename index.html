@@ -225,12 +225,13 @@
     </div>
     <div class="feature">
       <span class="icon">🎙️</span>
-      <h3>Spotkania i transkrypcja</h3>
+      <h3>Spotkania i transkrypcja <small style="color:var(--accent)">· rozbudowane w 1.10</small></h3>
       <ul>
         <li>Nagrywanie mikrofonu i dźwięku systemowego (wideokonferencje) bez sterowników</li>
         <li>Transkrypcja lokalnie przez whisper.cpp — po polsku, offline</li>
         <li>Tryby: dyktowanie, rozmowa przy stole, spotkanie online, hybrydowe</li>
         <li>Zapis prosto do notesu, z czasem i stroną rozmowy</li>
+        <li>Każde nagranie z tagiem <code>#transkrypcja</code>; widok Transkrypcje zbiera wszystkie zapisy rozmów z datami (⌘6)</li>
       </ul>
     </div>
     <div class="feature">
@@ -247,12 +248,13 @@
     </div>
     <div class="feature">
       <span class="icon">🗂️</span>
-      <h3>Organizacja i prywatność</h3>
+      <h3>Organizacja i prywatność <small style="color:var(--accent)">· linki w 1.10</small></h3>
       <ul>
         <li>Tagi zamiast folderów — pliki leżą płasko, projekty w grupach</li>
         <li>Tryby pracy: Służbowy, Domowy… — przełączasz cały kontekst naraz</li>
         <li>Notatki chronione PIN-em, zamykane same po kwadransie</li>
         <li>Kosz, kopie bezpieczeństwa i cofanie operacji na notesie</li>
+        <li>Linki w jednym miejscu (⌘7): adres z opisem trafia do notesu Linki, a widok zbiera linki ze wszystkich notesów; adresy w tekście są klikalne</li>
       </ul>
     </div>
     <div class="feature">
@@ -272,6 +274,18 @@
 <section id="wydania">
   <h2>Wydania</h2>
   <div class="releases">
+
+    <div class="release">
+      <div class="meta">1.10 · 16 września 2026</div>
+      <h3>Tag transkrypcji, widok Transkrypcje i Linki w jednym miejscu</h3>
+      <ul>
+        <li><b>Tag <code>#transkrypcja</code></b> — każde nagranie dostaje go w tytule wpisu; w nagłówku widać plakietkę, a starszy wpis oznaczysz z menu ⋯ → „Oznacz jako transkrypcję". Wpisy nagrane przed tagiem też się liczą.</li>
+        <li><b>Widok Transkrypcje</b> (⌘6) — wszystkie zapisy rozmów z całej biblioteki od najnowszego, po miesiącach: data, tryb, długość, zajawka; filtr słów, notesu i okresu; klik wraca do wpisu.</li>
+        <li><b>Widok Linki</b> (⌘7) — adres z opisem trafia do notesu Linki jako <code>- [Opis](adres)</code>; widok zbiera linki ze wszystkich notesów, klik otwiera przeglądarkę, strzałka wraca do wpisu.</li>
+        <li><b>Adresy klikalne w edytorze</b> — obok osób, dat i <code>[[Projekt]]</code>.</li>
+        <li><b>Długie nagrania</b> — stałe okna 15 s bez zapętlania po 20 minutach; Stop kończy tylko zaległy dźwięk, bez drugiego przejścia po plikach.</li>
+      </ul>
+    </div>
 
     <div class="release">
       <div class="meta">1.9 · 6 września 2026</div>
